@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "spring.token.expire",
+      "type": "java.lang.Integer",
+      "description": "token的失效时间."
+    }
+  ]
+}
