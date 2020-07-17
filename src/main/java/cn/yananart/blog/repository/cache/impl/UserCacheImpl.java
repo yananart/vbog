@@ -85,8 +85,8 @@ public class UserCacheImpl implements UserCache {
     }
 
     @Override
-    public Token cacheByToken(User user) {
-        String username = user.getUsername();
+    public Token cacheByToken(String username) {
+        User user = queryByUsername(username);
         Token token = tokenCache.queryByUsername(username);
         if (token != null) {
             tokenCache.deleteByUsername(username);
@@ -95,6 +95,7 @@ public class UserCacheImpl implements UserCache {
         String uuid = UUID.randomUUID().toString();
         token.setToken(uuid);
         token.setExpire(tokenExpire);
+        token.setUsername(username);
         String key = KEY_USER_TOKEN + uuid;
         redisTemplate.opsForValue().set(key, user, tokenExpire, TimeUnit.SECONDS);
         tokenCache.cacheByUsername(username, token);

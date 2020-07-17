@@ -16,5 +16,5 @@ public interface UserCache {
 
     User queryByToken(String token);
 
-    Token cacheByToken(User user);
+    Token cacheByToken(String username);
 }

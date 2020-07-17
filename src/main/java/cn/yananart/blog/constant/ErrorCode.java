@@ -14,6 +14,7 @@ public enum ErrorCode {
 
     PARAM_INPUT_ERROR(-1, "参数错误"),
     SESSION_INVALID(-99, "Session失效"),
+    NO_AUTH_ERROR(-100, "no user auth"),
     USER_NO_EXITS(100, "用户不存在"),
     USER_NO_LOGIN(101, "用户未登录");
 

@@ -31,7 +31,7 @@ public class LoginServiceImpl implements LoginService {
             User user = userCache.queryByUsername(username);
             if (user != null) {
                 return new org.springframework.security.core.userdetails.User(
-                        username, user.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList("admin")
+                        username, user.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList(user.getRoles())
                 );
             }
             throw new UsernameNotFoundException("no " + username);

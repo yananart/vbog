@@ -17,4 +17,8 @@ public class Token {
      * 有效期 秒
      */
     private Integer expire;
+    /**
+     * 用户名
+     */
+    private String username;
 }
