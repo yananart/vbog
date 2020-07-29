@@ -25,7 +25,7 @@ public class TokenCacheImpl implements TokenCache {
     @Override
     public Token queryByUsername(String username) {
         String key = KEY_TOKEN_USER + username;
-        if (redisTemplate.hasKey(key)) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             return (Token) redisTemplate.opsForValue().get(key);
         }
         return null;
@@ -34,7 +34,7 @@ public class TokenCacheImpl implements TokenCache {
     @Override
     public void deleteByUsername(String username) {
         String key = KEY_TOKEN_USER + username;
-        if (redisTemplate.hasKey(key)) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             redisTemplate.delete(key);
         }
     }

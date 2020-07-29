@@ -52,7 +52,7 @@ public class UserCacheImpl implements UserCache {
     @Override
     public User queryById(Integer id) {
         String key = KEY_USER_ID + id;
-        if (redisTemplate.hasKey(key)) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             return (User) redisTemplate.opsForValue().get(key);
         }
         User user = userMapper.queryById(id);
@@ -65,7 +65,7 @@ public class UserCacheImpl implements UserCache {
     @Override
     public User queryByUsername(String username) {
         String key = KEY_USER_NAME + username;
-        if (redisTemplate.hasKey(key)) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             return (User) redisTemplate.opsForValue().get(key);
         }
         User user = userMapper.queryByUsername(username);
@@ -78,7 +78,7 @@ public class UserCacheImpl implements UserCache {
     @Override
     public User queryByToken(String token) {
         String key = KEY_USER_TOKEN + token;
-        if (redisTemplate.hasKey(key)) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             return (User) redisTemplate.opsForValue().get(key);
         }
         return null;
