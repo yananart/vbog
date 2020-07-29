@@ -8,6 +8,3 @@ create table tb_user
     roles    varchar(64)  null comment '角色',
     constraint tb_user_username_unique unique (username)
 );
-
-insert into tb_user(uid, username, password, roles)
-values (1, 'Yananart', '$2a$10$/NeBKahL0F1WEwtmz3D2feLSNfnogjYBn5a4rVWDOIevzwufFMVPK', 'ADMIN');

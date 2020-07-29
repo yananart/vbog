@@ -1,5 +1,6 @@
 package cn.yananart.blog.repository.cache.impl;
 
+import cn.yananart.blog.config.BlogConfig;
 import cn.yananart.blog.constant.Constants;
 import cn.yananart.blog.domain.pojo.Token;
 import cn.yananart.blog.domain.pojo.User;
@@ -8,7 +9,6 @@ import cn.yananart.blog.repository.cache.UserCache;
 import cn.yananart.blog.repository.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +23,12 @@ import java.util.concurrent.TimeUnit;
 public class UserCacheImpl implements UserCache {
 
     private RedisTemplate<Object, Object> redisTemplate;
+
     private UserMapper userMapper;
 
     private TokenCache tokenCache;
 
-    @Value("${spring.token.expire}")
-    private Integer tokenExpire;
+    private BlogConfig blogConfig;
 
     @Autowired
     public void setRedisTemplate(RedisTemplate<Object, Object> redisTemplate) {
@@ -43,6 +43,11 @@ public class UserCacheImpl implements UserCache {
     @Autowired
     public void setTokenCache(TokenCache tokenCache) {
         this.tokenCache = tokenCache;
+    }
+
+    @Autowired
+    public void setBlogConfig(BlogConfig blogConfig) {
+        this.blogConfig = blogConfig;
     }
 
     private static final String KEY_USER_ID = Constants.REDIS_SCOPE + "user:id:";
@@ -94,10 +99,10 @@ public class UserCacheImpl implements UserCache {
         token = new Token();
         String uuid = UUID.randomUUID().toString();
         token.setToken(uuid);
-        token.setExpire(tokenExpire);
+        token.setExpire(blogConfig.getTokenExpire());
         token.setUsername(username);
         String key = KEY_USER_TOKEN + uuid;
-        redisTemplate.opsForValue().set(key, user, tokenExpire, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, user, blogConfig.getTokenExpire(), TimeUnit.SECONDS);
         tokenCache.cacheByUsername(username, token);
         return token;
     }

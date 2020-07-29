@@ -7,6 +7,7 @@ import cn.yananart.blog.filter.AuthenticationFilter;
 import cn.yananart.blog.filter.CertificationFilter;
 import cn.yananart.blog.repository.cache.UserCache;
 import cn.yananart.blog.service.LoginService;
+import cn.yananart.blog.util.PasswordUtil;
 import cn.yananart.blog.util.ResultUtil;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -27,9 +27,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class LoginConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * 登录服务
+     */
     private LoginService loginService;
+    /**
+     * 用户数据缓存
+     */
     private UserCache userCache;
-
+    /**
+     * 密码加密工具类
+     */
+    private PasswordUtil passwordUtil;
+    /**
+     * 统一认证
+     */
     private CertificationFilter certificationFilter;
 
     @Autowired
@@ -43,13 +55,19 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
+    public void setPasswordUtil(PasswordUtil passwordUtil) {
+        this.passwordUtil = passwordUtil;
+    }
+
+    @Autowired
     public void setCertificationFilter(CertificationFilter certificationFilter) {
         this.certificationFilter = certificationFilter;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(loginService).passwordEncoder(new BCryptPasswordEncoder());
+        // 这里加密对象的注入通过自定义配置里的实例化后注入
+        auth.userDetailsService(loginService).passwordEncoder(passwordUtil.getPasswordEncoder());
     }
 
     @Override
@@ -69,7 +87,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         // 替换默认的
         http.addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         // 同于认证
-        http.addFilterBefore(certificationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(certificationFilter, UsernamePasswordAuthenticationFilter.class);
         // 登录管理
         http.formLogin().permitAll();
 
@@ -77,6 +95,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/user/**").permitAll()
+                .antMatchers("/manager/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated();
 
         // 注销处理
@@ -90,6 +109,9 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
+    /**
+     * 统一登录
+     */
     @Bean
     protected AuthenticationFilter authenticationFilter() throws Exception {
         AuthenticationFilter filter = new AuthenticationFilter();
@@ -107,10 +129,5 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         });
         filter.setAuthenticationManager(authenticationManager());
         return filter;
-    }
-
-
-    protected CertificationFilter certificationFilter() {
-        return certificationFilter;
     }
 }

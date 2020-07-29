@@ -5,6 +5,7 @@ import cn.yananart.blog.domain.pojo.User;
 import cn.yananart.blog.exception.BlogException;
 import cn.yananart.blog.repository.cache.UserCache;
 import cn.yananart.blog.service.UserService;
+import cn.yananart.blog.util.PasswordUtil;
 import cn.yananart.blog.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getLoginUser() {
-        User user = UserUtil.getLoginUser();
+        String username = UserUtil.getLoginUser();
+        User user = userCache.queryByUsername(username);
         if (user == null) {
             throw new BlogException(ErrorCode.USER_NO_LOGIN);
         }
@@ -35,13 +37,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Integer id) {
-        if (id != null) {
-            User user = userCache.queryById(id);
-            if (user == null) {
-                throw new BlogException(ErrorCode.USER_NO_EXITS);
-            }
-            return user;
+        User user = userCache.queryById(id);
+        if (user == null) {
+            throw new BlogException(ErrorCode.USER_NO_EXITS);
         }
-        throw new BlogException(ErrorCode.PARAM_INPUT_ERROR);
+        return user;
+    }
+
+    @Override
+    public User getUserByName(String username) {
+        User user = userCache.queryByUsername(username);
+        if (user == null) {
+            throw new BlogException(ErrorCode.USER_NO_EXITS);
+        }
+        return user;
+    }
+
+    @Override
+    public Boolean addUser(User user) {
+        user.setPassword(PasswordUtil.encode(user.getPassword()));
+        user.setRoles("USER");
+
+        return null;
     }
 }
