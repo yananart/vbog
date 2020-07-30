@@ -26,14 +26,7 @@ public class PasswordUtil {
      */
     @Autowired
     public void setBlogConfig(BlogConfig blogConfig) {
-        String className = blogConfig.getPasswordEncoder();
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            log.error("获取PasswordEncoder类失败，请检测类名", e);
-            throw new BlogException(ErrorCode.INIT_PASSWORD_ENCODER_ERROR);
-        }
+        Class<?> clazz = blogConfig.getPasswordEncoder();
         Object obj;
         try {
             obj = clazz.newInstance();

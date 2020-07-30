@@ -3,6 +3,7 @@ package cn.yananart.blog.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * 本项目自定义的配置信息
@@ -22,7 +23,7 @@ public class BlogConfig {
     /**
      * 密码加密工具类
      */
-    private String passwordEncoder = "org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder";
+    private Class<? extends PasswordEncoder> passwordEncoder = org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.class;
 
     /**
      * 管理员用户名
