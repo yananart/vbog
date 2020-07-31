@@ -14,4 +14,24 @@
         from tb_user
         where username = #{username}
     </select>
+
+    <insert id="insertUser" parameterType="cn.yananart.blog.domain.pojo.User">
+        insert into tb_user(username, password, roles)
+        values (#{username}, #{password}, #{roles})
+    </insert>
+
+    <update id="updateById" parameterType="cn.yananart.blog.domain.pojo.User">
+        update tb_user
+        set username = #{username},
+            password = #{password},
+            roles    = #{roles}
+        where uid = #{uid}
+    </update>
+
+    <update id="updateByUsername" parameterType="cn.yananart.blog.domain.pojo.User">
+        update tb_user
+        set password = #{password},
+            roles    = #{roles}
+        where username = #{username}
+    </update>
 </mapper>

@@ -14,7 +14,11 @@ public interface UserCache {
 
     User queryByUsername(String username);
 
+    void deleteByUsername(String username);
+
     User queryByToken(String token);
+
+    void deleteByToken(String token);
 
     Token cacheByToken(String username);
 }

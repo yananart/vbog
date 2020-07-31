@@ -86,7 +86,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
 
         // 替换默认的
         http.addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        // 同于认证
+        // 统一认证
         http.addFilterBefore(certificationFilter, UsernamePasswordAuthenticationFilter.class);
         // 登录管理
         http.formLogin().permitAll();
@@ -101,6 +101,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         // 注销处理
         http.logout()
                 .logoutUrl("/auth/logout")
+                // 注销的时候并不清掉token
                 .logoutSuccessHandler((httpServletRequest, httpServletResponse, e) -> {
                     httpServletResponse.setContentType("text/json;charset=utf-8");
                     httpServletResponse.getWriter().write(JSON.toJSONString(ResultUtil.returnSuccess()));

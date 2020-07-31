@@ -81,12 +81,28 @@ public class UserCacheImpl implements UserCache {
     }
 
     @Override
+    public void deleteByUsername(String username) {
+        String key = KEY_USER_NAME + username;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.delete(key);
+        }
+    }
+
+    @Override
     public User queryByToken(String token) {
         String key = KEY_USER_TOKEN + token;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             return (User) redisTemplate.opsForValue().get(key);
         }
         return null;
+    }
+
+    @Override
+    public void deleteByToken(String token) {
+        String key = KEY_USER_TOKEN + token;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.delete(key);
+        }
     }
 
     @Override

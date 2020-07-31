@@ -20,4 +20,24 @@ public interface UserMapper {
      */
     User queryByUsername(String username);
 
+    /**
+     * 录入用户
+     *
+     * @param user 用户对象
+     */
+    void insertUser(User user);
+
+    /**
+     * 更新用户 以id
+     *
+     * @param user 用户对象
+     */
+    void updateById(User user);
+
+    /**
+     * 更新用户 以username
+     *
+     * @param user 用户对象
+     */
+    void updateByUsername(User user);
 }

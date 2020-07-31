@@ -17,7 +17,8 @@ public enum ErrorCode {
     /**
      * 初始化passwordEncoder异常
      */
-    INIT_PASSWORD_ENCODER_ERROR(-1001,"密码加密器初始化错误"),
+    INIT_PASSWORD_ENCODER_ERROR(-1001, "密码加密器初始化错误"),
+    INIT_ADMIN_ERROR(-1002, "初始化管理员错误"),
 
     PARAM_INPUT_ERROR(-1, "参数错误"),
     SESSION_INVALID(-99, "Session失效"),

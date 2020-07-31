@@ -35,4 +35,9 @@ public class BlogConfig {
      */
     private String adminPassword = "Yananart";
 
+    /**
+     * 是否强制更新admin用户
+     */
+    private Boolean adminForceUpdate = false;
+
 }
