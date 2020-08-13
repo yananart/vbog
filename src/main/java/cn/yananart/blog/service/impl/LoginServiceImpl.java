@@ -99,11 +99,6 @@ public class LoginServiceImpl implements LoginService {
                 try {
                     userMapper.updateByUsername(user);
                     userCache.deleteByUsername(username);
-                    Token token = tokenCache.queryByUsername(username);
-                    if (token != null) {
-                        userCache.deleteByToken(token.getToken());
-                        tokenCache.deleteByUsername(username);
-                    }
                 } catch (Exception e) {
                     log.error("更新默认管理员用户{}失败", username, e);
                     throw new BlogException(ErrorCode.INIT_ADMIN_ERROR);

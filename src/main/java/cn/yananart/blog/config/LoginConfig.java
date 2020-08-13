@@ -119,7 +119,7 @@ public class LoginConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationSuccessHandler((request, response, authentication) -> {
             response.setContentType("text/json;charset=utf-8");
             // 生成一个token，并写入缓存
-            Token token = userCache.cacheByToken(authentication.getName());
+            Token token = userCache.cacheByUsernameForToken(authentication.getName());
             BaseRes res = ResultUtil.returnSuccessObject(token);
             response.getWriter().write(JSON.toJSONString(res));
         });

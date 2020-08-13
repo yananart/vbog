@@ -23,8 +23,8 @@ public class TokenCacheImpl implements TokenCache {
     private static final String KEY_TOKEN_USER = Constants.REDIS_SCOPE + "token:user:";
 
     @Override
-    public Token queryByUsername(String username) {
-        String key = KEY_TOKEN_USER + username;
+    public Token queryByUserId(Integer uId) {
+        String key = KEY_TOKEN_USER + uId;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             return (Token) redisTemplate.opsForValue().get(key);
         }
@@ -32,16 +32,16 @@ public class TokenCacheImpl implements TokenCache {
     }
 
     @Override
-    public void deleteByUsername(String username) {
-        String key = KEY_TOKEN_USER + username;
+    public void deleteByUserId(Integer uId) {
+        String key = KEY_TOKEN_USER + uId;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             redisTemplate.delete(key);
         }
     }
 
     @Override
-    public void cacheByUsername(String username, Token token) {
-        String key = KEY_TOKEN_USER + username;
+    public void cacheByUserId(Integer uId, Token token) {
+        String key = KEY_TOKEN_USER + uId;
         redisTemplate.opsForValue().set(key, token);
     }
 }

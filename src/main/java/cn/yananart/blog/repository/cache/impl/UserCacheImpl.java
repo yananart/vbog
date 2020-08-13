@@ -55,16 +55,24 @@ public class UserCacheImpl implements UserCache {
     private static final String KEY_USER_TOKEN = Constants.REDIS_SCOPE + "user:token:";
 
     @Override
-    public User queryById(Integer id) {
-        String key = KEY_USER_ID + id;
+    public User queryById(Integer uId) {
+        String key = KEY_USER_ID + uId;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
             return (User) redisTemplate.opsForValue().get(key);
         }
-        User user = userMapper.queryById(id);
+        User user = userMapper.queryById(uId);
         if (user != null) {
             redisTemplate.opsForValue().set(key, user);
         }
         return user;
+    }
+
+    @Override
+    public void deleteById(Integer uId) {
+        String key = KEY_USER_ID + uId;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            redisTemplate.delete(key);
+        }
     }
 
     @Override
@@ -84,6 +92,10 @@ public class UserCacheImpl implements UserCache {
     public void deleteByUsername(String username) {
         String key = KEY_USER_NAME + username;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
+            User user = queryByUsername(username);
+            if (user != null) {
+                deleteById(user.getUid());
+            }
             redisTemplate.delete(key);
         }
     }
@@ -92,7 +104,10 @@ public class UserCacheImpl implements UserCache {
     public User queryByToken(String token) {
         String key = KEY_USER_TOKEN + token;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(key))) {
-            return (User) redisTemplate.opsForValue().get(key);
+            Integer uId = (Integer) redisTemplate.opsForValue().get(key);
+            if (uId != null) {
+                return queryById(uId);
+            }
         }
         return null;
     }
@@ -106,11 +121,12 @@ public class UserCacheImpl implements UserCache {
     }
 
     @Override
-    public Token cacheByToken(String username) {
+    public Token cacheByUsernameForToken(String username) {
         User user = queryByUsername(username);
-        Token token = tokenCache.queryByUsername(username);
+        Token token = tokenCache.queryByUserId(user.getUid());
         if (token != null) {
-            tokenCache.deleteByUsername(username);
+            tokenCache.deleteByUserId(user.getUid());
+            deleteByToken(token.getToken());
         }
         token = new Token();
         String uuid = UUID.randomUUID().toString();
@@ -118,8 +134,8 @@ public class UserCacheImpl implements UserCache {
         token.setExpire(blogConfig.getTokenExpire());
         token.setUsername(username);
         String key = KEY_USER_TOKEN + uuid;
-        redisTemplate.opsForValue().set(key, user, blogConfig.getTokenExpire(), TimeUnit.SECONDS);
-        tokenCache.cacheByUsername(username, token);
+        redisTemplate.opsForValue().set(key, user.getUid(), blogConfig.getTokenExpire(), TimeUnit.SECONDS);
+        tokenCache.cacheByUserId(user.getUid(), token);
         return token;
     }
 }
