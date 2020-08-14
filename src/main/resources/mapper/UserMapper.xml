@@ -1,26 +1,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.yananart.blog.repository.mapper.UserMapper">
+<mapper namespace="cn.yananart.base.repository.mapper.UserMapper">
 
-    <select id="queryById" resultType="cn.yananart.blog.domain.pojo.User">
+    <select id="queryById" resultType="cn.yananart.base.domain.pojo.User">
         select *
         from tb_user
         where uid = #{id}
     </select>
 
-    <select id="queryByUsername" resultType="cn.yananart.blog.domain.pojo.User">
+    <select id="queryByUsername" resultType="cn.yananart.base.domain.pojo.User">
         select *
         from tb_user
         where username = #{username}
     </select>
 
-    <insert id="insertUser" parameterType="cn.yananart.blog.domain.pojo.User">
+    <insert id="insertUser" parameterType="cn.yananart.base.domain.pojo.User">
         insert into tb_user(username, password, roles)
         values (#{username}, #{password}, #{roles})
     </insert>
 
-    <update id="updateById" parameterType="cn.yananart.blog.domain.pojo.User">
+    <update id="updateById" parameterType="cn.yananart.base.domain.pojo.User">
         update tb_user
         set username = #{username},
             password = #{password},
@@ -28,7 +28,7 @@
         where uid = #{uid}
     </update>
 
-    <update id="updateByUsername" parameterType="cn.yananart.blog.domain.pojo.User">
+    <update id="updateByUsername" parameterType="cn.yananart.base.domain.pojo.User">
         update tb_user
         set password = #{password},
             roles    = #{roles}
